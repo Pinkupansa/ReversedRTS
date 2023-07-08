@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     PlayerAnimationManager animationManager;
 
     [SerializeField] private bool canMove;
+    [SerializeField] AudioClip dashSound;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,6 +32,8 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetButtonDown("Jump"))
         {
+            SoundUtility.PlayOneShot(GetComponent<AudioSource>(), dashSound, 0.2f, 1.3f);
+
             motor.Dash(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), animationManager);
         }
 

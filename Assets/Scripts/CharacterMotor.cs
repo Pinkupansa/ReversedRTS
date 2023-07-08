@@ -2,20 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Rigidbody))]
 public class CharacterMotor : MonoBehaviour
 {
     [SerializeField] float speed, dashSpeed;
-    private Rigidbody2D rb;
+    private Rigidbody rb;
     public void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody>();
 
     }
     public void MovePlayer(float horizontal, float vertical, PlayerAnimationManager animationManager)
     {
-        rb.AddForce(new Vector2(horizontal, vertical).normalized * speed, ForceMode2D.Impulse);
-        transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.y);
+        rb.AddForce(new Vector3(horizontal, 0, vertical).normalized * speed, ForceMode.Impulse);
 
         animationManager.UpdateMovementAnimation(horizontal, vertical);
     }
@@ -25,7 +24,7 @@ public class CharacterMotor : MonoBehaviour
     }
     public void Dash(float horizontal, float vertical, PlayerAnimationManager animationManager)
     {
-        rb.AddForce(new Vector3(horizontal, vertical, vertical).normalized * dashSpeed, ForceMode2D.Impulse);
+        rb.AddForce(new Vector3(horizontal, 0, vertical).normalized * dashSpeed, ForceMode.Impulse);
         animationManager.UpdateMovementAnimation(horizontal, vertical);
     }
 

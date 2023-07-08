@@ -8,7 +8,7 @@ public class PlayerAttackManager : MonoBehaviour
     [SerializeField] GameObject weaponHolder;
     [SerializeField] float weaponHolderDistance;
 
-    [SerializeField] AudioClip[] attackSounds;
+    [SerializeField] AudioClip[] attackSounds, hitSounds;
     float attackTimer = 0f;
 
 
@@ -28,16 +28,20 @@ public class PlayerAttackManager : MonoBehaviour
     public void Attack()
     {
         Debug.Log("Attacking");
-        SoundUtility.PlayRandomFromArrayOneShot(GetComponent<AudioSource>(), attackSounds, 0.2f, false);
+        SoundUtility.PlayRandomFromArrayOneShot(GetComponent<AudioSource>(), attackSounds, 0.2f);
         //Overlap sphere around the weapon
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(weaponHolder.transform.position, currentWeapon.BaseRange);
+        Collider[] colliders = Physics.OverlapSphere(weaponHolder.transform.position, currentWeapon.BaseRange);
+        //Show OverlapSphere
+
         //Check if the collider is an enemy
-        foreach (Collider2D collider in colliders)
+        foreach (Collider collider in colliders)
         {
             if (collider.CompareTag("Enemy"))
             {
+                SoundUtility.PlayRandomFromArrayOneShot(GetComponent<AudioSource>(), hitSounds, 0.2f);
                 //Damage the enemy
                 collider.GetComponent<Enemy>().TakeDamage(currentWeapon.BaseDamage, false);
+
             }
         }
 
@@ -50,10 +54,7 @@ public class PlayerAttackManager : MonoBehaviour
         Vector2 mousePos = Input.mousePosition;
         Vector2 direction = (mousePos - screenPos).normalized;
 
-        weaponHolder.transform.localPosition = direction * weaponHolderDistance;
-        weaponHolder.transform.localRotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
-        weaponHolder.transform.localPosition = new Vector3(weaponHolder.transform.localPosition.x, weaponHolder.transform.localPosition.y, weaponHolder.transform.localPosition.y);
-
+        weaponHolder.transform.localPosition = new Vector3(direction.x, 0, direction.y) * weaponHolderDistance + Vector3.up * 0.5f;
 
         attackTimer -= Time.deltaTime;
         if (Input.GetButtonDown("Fire1") && attackTimer <= 0f)

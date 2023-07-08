@@ -24,7 +24,6 @@ public class Enemy : MonoBehaviour
 
     [SerializeField] float attackRange, attackSpeed, damageImmoTime;
     [SerializeField] int attackDamage, maxHealth;
-    [SerializeField] AudioClip[] damageTakenSounds, attackSounds;
     [SerializeField] GameObject deathParticles;
     int currentHealth;
     float attackTimer;
@@ -47,7 +46,6 @@ public class Enemy : MonoBehaviour
     public void TakeDamage(int damage, bool isImmobilisation)
     {
         currentHealth -= damage;
-        SoundUtility.PlayRandomFromArrayOneShot(GetComponent<AudioSource>(), damageTakenSounds, 0.2f, false);
         if (currentHealth <= 0)
         {
             Die();
@@ -59,7 +57,8 @@ public class Enemy : MonoBehaviour
     }
     private void Die()
     {
-        Instantiate(deathParticles, transform.position, Quaternion.identity);
+        if (deathParticles != null)
+            Instantiate(deathParticles, transform.position, Quaternion.identity);
         CamManager.instance.CamShake(0.2f);
         Destroy(gameObject);
     }
@@ -102,7 +101,6 @@ public class Enemy : MonoBehaviour
                 else
                 {
                     state = EnemyBehaviour.Chasing;
-                    SoundUtility.CancelOneOfSounds(GetComponent<AudioSource>(), damageTakenSounds);
                 }
                 break;
             case EnemyBehaviour.Idle:
@@ -116,7 +114,7 @@ public class Enemy : MonoBehaviour
     void Chase()
     {
         if (target != null)
-            motor.MovePlayer((target.position - transform.position).normalized.x, (target.position - transform.position).normalized.y, animationManager);
+            motor.MovePlayer((target.position - transform.position).normalized.x, (target.position - transform.position).normalized.z, animationManager);
     }
     void Attack()
     {

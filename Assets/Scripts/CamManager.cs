@@ -11,7 +11,7 @@ public class CamManager : MonoBehaviour
     }
     public void CamShake(float duration)
     {
-        StartCoroutine(Shake(duration, 2f));
+        StartCoroutine(Shake(duration, 0.5f));
     }
 
     IEnumerator Shake(float duration, float magnitude)
@@ -21,8 +21,7 @@ public class CamManager : MonoBehaviour
         while (elapsed < duration)
         {
             float x = Random.Range(-1f, 1f) * magnitude;
-            float y = Random.Range(-1f, 1f) * magnitude;
-            transform.localPosition = new Vector3(x, y, originalPos.z);
+            transform.localPosition = new Vector3(x, transform.localPosition.y, originalPos.z);
             elapsed += Time.deltaTime;
             yield return null;
         }

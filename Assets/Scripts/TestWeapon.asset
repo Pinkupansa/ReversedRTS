@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: TestWeapon
   m_EditorClassIdentifier: 
   prefab: {fileID: 1351791937494273345, guid: c53112c0833bfc64d8fa31b6e06f5a52, type: 3}
-  baseDamage: 0
-  baseSpeed: 1
+  baseDamage: 1
+  baseSpeed: 3
   baseRange: 1
