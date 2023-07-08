@@ -14,7 +14,7 @@ public enum EnemyBehaviour
 [RequireComponent(typeof(CharacterMotor))]
 [RequireComponent(typeof(PlayerAnimationManager))]
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IDamageable
 {
     Transform target;
     CharacterMotor motor;
@@ -114,7 +114,10 @@ public class Enemy : MonoBehaviour
     void Chase()
     {
         if (target != null)
+        {
             motor.MovePlayer((target.position - transform.position).normalized.x, (target.position - transform.position).normalized.z, animationManager);
+        }
+
     }
     void Attack()
     {
@@ -155,7 +158,7 @@ public class Enemy : MonoBehaviour
                 TakeDamage();
                 break;
             case EnemyBehaviour.Idle:
-
+                Idle();
                 break;
         }
     }
@@ -169,6 +172,10 @@ public class Enemy : MonoBehaviour
     public EnemyBehaviour GetState()
     {
         return state;
+    }
+    void Idle()
+    {
+        motor.MovePlayer(0, 0, animationManager);
     }
 }
 

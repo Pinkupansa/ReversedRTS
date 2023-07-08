@@ -36,11 +36,11 @@ public class PlayerAttackManager : MonoBehaviour
         //Check if the collider is an enemy
         foreach (Collider collider in colliders)
         {
-            if (collider.CompareTag("Enemy"))
+            IDamageable damageable = collider.GetComponent<IDamageable>();
+            if (damageable != null)
             {
                 SoundUtility.PlayRandomFromArrayOneShot(GetComponent<AudioSource>(), hitSounds, 0.2f);
-                //Damage the enemy
-                collider.GetComponent<Enemy>().TakeDamage(currentWeapon.BaseDamage, false);
+                damageable.TakeDamage(currentWeapon.BaseDamage, false);
 
             }
         }

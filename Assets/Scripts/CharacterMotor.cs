@@ -24,8 +24,17 @@ public class CharacterMotor : MonoBehaviour
     }
     public void Dash(float horizontal, float vertical, PlayerAnimationManager animationManager)
     {
+        float oldDrag = rb.drag;
+        rb.drag = 10;
+        StartCoroutine(WaitBeforeStoppingDash(oldDrag));
         rb.AddForce(new Vector3(horizontal, 0, vertical).normalized * dashSpeed, ForceMode.Impulse);
         animationManager.UpdateMovementAnimation(horizontal, vertical);
+    }
+
+    IEnumerator WaitBeforeStoppingDash(float oldDrag)
+    {
+        yield return new WaitForSecondsRealtime(0.2f);
+        rb.drag = oldDrag;
     }
 
 }

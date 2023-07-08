@@ -16,7 +16,7 @@ public class PlayerAnimationManager : MonoBehaviour
 
     private Vector2 RoundAnimationParameters(float horizontal, float vertical)
     {
-        if (horizontal == 0 && vertical == 0)
+        /*if (horizontal == 0 && vertical == 0)
         {
             return new Vector2(0, -1);
         }
@@ -38,20 +38,28 @@ public class PlayerAnimationManager : MonoBehaviour
             {
                 return new Vector2(0, Mathf.Sign(vertical));
             }
-        }
+        }*/
+
+        return new Vector2(horizontal > 0 ? 1 : -1, 0);
+
+
     }
 
     public void UpdateMovementAnimation(float xMovement, float yMovement)
     {
 
-        if (Mathf.Abs(xMovement) > 0.01f || Mathf.Abs(yMovement) > 0.01f)
+        if (Mathf.Abs(xMovement) > 0.1f)
         {
             Vector2 animationParameters = RoundAnimationParameters(xMovement, yMovement);
 
             animator.SetBool("isMoving", true);
             animator.SetFloat("Xinput", animationParameters.x);
-            animator.SetFloat("Yinput", animationParameters.y);
+            // animator.SetFloat("Yinput", animationParameters.y);
 
+        }
+        else if (Mathf.Abs(yMovement) > 0.01f)
+        {
+            animator.SetBool("isMoving", true);
         }
         else
         {

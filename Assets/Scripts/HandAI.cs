@@ -14,10 +14,12 @@ public class HandAI : MonoBehaviour
 
     List<Enemy> unitsToBeSelected;
     List<Enemy> unitsSelected;
-    Vector2 startSelectionPosition;
-    Vector2 endSelectionPosition;
+    Vector3 startSelectionPosition;
+    Vector3 endSelectionPosition;
 
     Transform playerTransform;
+
+    float targetTolerance = 0.1f;
     void Start()
     {
 
@@ -42,36 +44,36 @@ public class HandAI : MonoBehaviour
         unitsToBeSelected = new List<Enemy>();
         float minX = Mathf.Infinity;
         float maxX = Mathf.NegativeInfinity;
-        float minY = Mathf.Infinity;
-        float maxY = Mathf.NegativeInfinity;
+        float minZ = Mathf.Infinity;
+        float maxZ = Mathf.NegativeInfinity;
         foreach (Enemy enemy in GameObject.FindObjectsOfType<Enemy>())
         {
             if (enemy.GetState() == EnemyBehaviour.Idle)
             {
                 unitsToBeSelected.Add(enemy);
 
-                Vector3 screenPoint = Camera.main.WorldToScreenPoint(enemy.transform.position);
-                if (screenPoint.x < minX)
+                Vector3 point = enemy.transform.position;
+                if (point.x < minX)
                 {
-                    minX = screenPoint.x;
+                    minX = point.x;
                 }
-                if (screenPoint.x > maxX)
+                if (point.x > maxX)
                 {
-                    maxX = screenPoint.x;
+                    maxX = point.x;
                 }
-                if (screenPoint.y < minY)
+                if (point.y < minZ)
                 {
-                    minY = screenPoint.y;
+                    minZ = point.z;
                 }
-                if (screenPoint.y > maxY)
+                if (point.y > maxZ)
                 {
-                    maxY = screenPoint.y;
+                    maxZ = point.z;
                 }
             }
         }
 
-        startSelectionPosition = new Vector2(minX - 50, maxY + 50);
-        endSelectionPosition = new Vector2(maxX + 50, minY - 50);
+        startSelectionPosition = new Vector3(minX - 1, cursor.transform.position.y, maxZ + 1);
+        endSelectionPosition = new Vector3(maxX + 1, cursor.transform.position.y, minZ - 1);
 
     }
     void OnEnterIdle()
@@ -107,8 +109,9 @@ public class HandAI : MonoBehaviour
 
     State OnUpdateMoveToSelectUnits()
     {
+        RecalculateSelectionData();
         cursor.MoveTowards(startSelectionPosition);
-        if (Vector3.Distance(cursor.transform.position, startSelectionPosition) < 0.1f)
+        if (Vector3.Distance(cursor.transform.position, startSelectionPosition) < targetTolerance)
         {
             return selectUnitsState;
         }
@@ -119,6 +122,7 @@ public class HandAI : MonoBehaviour
     {
         Debug.Log("Entering Select Units");
         cursor.Click();
+        cursor.StartSelecting();
     }
 
     void OnExitSelectUnits()
@@ -126,14 +130,16 @@ public class HandAI : MonoBehaviour
         Debug.Log("Exiting Select Units");
         unitsToBeSelected = null;
         cursor.Release();
+        cursor.StopSelecting();
 
     }
 
     State OnUpdateSelectUnits()
     {
+        RecalculateSelectionData();
         cursor.MoveTowards(endSelectionPosition);
 
-        if (Vector3.Distance(cursor.transform.position, endSelectionPosition) < 0.1f)
+        if (Vector3.Distance(cursor.transform.position, endSelectionPosition) < targetTolerance)
         {
             Debug.Log("Selected Units");
             unitsSelected = new List<Enemy>();
@@ -159,10 +165,10 @@ public class HandAI : MonoBehaviour
 
     State OnUpdateMoveUnits()
     {
-        Vector2 target = Camera.main.WorldToScreenPoint(playerTransform.position);
+        Vector3 target = new Vector3(playerTransform.position.x, cursor.transform.position.y, playerTransform.position.z);
         cursor.MoveTowards(target);
 
-        if (Vector3.Distance(cursor.transform.position, target) < 0.1f)
+        if (Vector3.Distance(cursor.transform.position, target) < targetTolerance)
         {
             cursor.Click();
             foreach (Enemy enemy in unitsSelected)
