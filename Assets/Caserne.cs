@@ -12,6 +12,7 @@ public class Caserne : MonoBehaviour, IDamageable
     [SerializeField] Sprite destroyedSprite;
 
     [SerializeField] LifeBar lifeBar;
+    [SerializeField] GameObject particles;
     int currentHealth;
 
     float timer;
@@ -34,6 +35,10 @@ public class Caserne : MonoBehaviour, IDamageable
     }
     public void Update()
     {
+        if (!alive)
+        {
+            return;
+        }
         timer += Time.deltaTime;
         if (timer >= nextSpawnTime)
         {
@@ -69,6 +74,7 @@ public class Caserne : MonoBehaviour, IDamageable
             if (currentHealth <= 0)
             {
                 Die();
+                Instantiate(particles, transform.position, Quaternion.identity);
             }
             lifeBar.UpdateLifeBar(currentHealth, maxHealth);
         }
@@ -81,6 +87,7 @@ public class Caserne : MonoBehaviour, IDamageable
         Debug.Log("Caserne destroyed");
         GameManager.instance.OnCasernDestroyed();
         GetComponentInChildren<SpriteRenderer>().sprite = destroyedSprite;
+        CamManager.instance.CamShake(2f, 8);
         //deactivate lifebar
         lifeBar.gameObject.SetActive(false);
     }
@@ -96,7 +103,7 @@ public class Caserne : MonoBehaviour, IDamageable
                 soldierProbabilities[0] = 0.5f;
                 soldierProbabilities[1] = 0.5f;
                 soldierProbabilities[2] = 0;
-                spawnRate *= 1.3f;
+                spawnRate *= 1.33f;
                 maxHealth = Mathf.RoundToInt(maxHealth * 1.2f);
                 currentHealth = Mathf.RoundToInt(currentHealth * 1.2f);
                 transform.localScale *= 1.2f;
@@ -106,7 +113,7 @@ public class Caserne : MonoBehaviour, IDamageable
                 soldierProbabilities[0] = 0.5f;
                 soldierProbabilities[1] = 0.25f;
                 soldierProbabilities[2] = 0.25f;
-                spawnRate *= 1.3f;
+                spawnRate *= 1.515f;
                 maxHealth = Mathf.RoundToInt(maxHealth * 1.2f);
                 currentHealth = Mathf.RoundToInt(currentHealth * 1.2f);
                 transform.localScale *= 1.2f;
@@ -116,7 +123,7 @@ public class Caserne : MonoBehaviour, IDamageable
                 soldierProbabilities[0] = 0.33f;
                 soldierProbabilities[1] = 0.33f;
                 soldierProbabilities[2] = 0.33f;
-                spawnRate *= 1.3f;
+                spawnRate *= 2f;
                 maxHealth = Mathf.RoundToInt(maxHealth * 1.2f);
                 currentHealth = Mathf.RoundToInt(currentHealth * 1.2f);
                 transform.localScale *= 1.2f;

@@ -51,6 +51,11 @@ public class Enemy : MonoBehaviour, IDamageable
     }
     public void TakeDamage(int damage, bool isImmobilisation)
     {
+        GameObject parts = Instantiate(deathParticles, transform.position, Quaternion.identity);
+        //random rotiation in xz plane
+        parts.transform.rotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
+        parts.transform.localScale *= 10;
+        Destroy(parts, 0.5f);
         currentHealth -= damage;
         if (currentHealth <= 0)
         {
@@ -63,8 +68,7 @@ public class Enemy : MonoBehaviour, IDamageable
     }
     private void Die()
     {
-        if (deathParticles != null)
-            Instantiate(deathParticles, transform.position, Quaternion.identity);
+
         CamManager.instance.CamShake(0.2f);
         Destroy(gameObject);
     }
@@ -156,6 +160,10 @@ public class Enemy : MonoBehaviour, IDamageable
         //{
         // return;
         // }
+        if (transform.position.y != 0)
+        {
+            transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+        }
         CalculateNewState();
         switch (state)
         {

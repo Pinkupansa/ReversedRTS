@@ -11,6 +11,8 @@ public class HandAI : MonoBehaviour
 
     [SerializeField] float attackModeProbability;
     [SerializeField] Transform deleteTarget;
+
+    [SerializeField] GameObject hitboxClick;
     StateMachine handAIStateMachine;
 
     State idleState, selectUnitsState, moveUnitsState, moveToSelectUnitsState, moveToClickPlayerState, clickPlayerState, angryState, deleteState;
@@ -26,6 +28,8 @@ public class HandAI : MonoBehaviour
 
     float timeIdleMin = 1f;
     float idleTimer = 0f;
+
+    [SerializeField] float clickAttackRange = 1f;
     void Start()
     {
 
@@ -40,6 +44,8 @@ public class HandAI : MonoBehaviour
         angryState = new State("Angry", OnEnterAngry, OnExitAngry, OnUpdateAngry);
         deleteState = new State("Delete", OnEnterDelete, OnExitDelete, OnUpdateDelete);
 
+        hitboxClick.SetActive(false);
+        hitboxClick.transform.localScale = new Vector3(clickAttackRange, 1, clickAttackRange);
 
     }
 
@@ -247,6 +253,9 @@ public class HandAI : MonoBehaviour
     void OnEnterAngry()
     {
         cursor.Angry();
+        hitboxClick.SetActive(true);
+        hitboxClick.transform.position = Player.instance.transform.position + Vector3.up * 0.2f;
+
     }
 
     void OnExitAngry()
@@ -272,12 +281,13 @@ public class HandAI : MonoBehaviour
     void OnExitClickPlayer()
     {
         // Debug.Log("Exiting Click Player");
+        hitboxClick.SetActive(false);
     }
 
     State OnUpdateClickPlayer()
     {
         Vector3 playerPos = new Vector3(playerTransform.position.x, cursor.transform.position.y, playerTransform.position.z);
-        if (Vector3.Distance(cursor.transform.position, playerPos) < 4f)
+        if (Vector3.Distance(cursor.transform.position, playerPos) < clickAttackRange)
         {
             return deleteState;
         }

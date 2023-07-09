@@ -161,7 +161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb2dc31cb5d759c419f52c8ac4f8d009, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnRate: 0.3
+  spawnRate: 0.25
   soldierPrefabs:
   - {fileID: 5867191854181520378, guid: 0de70ee2512aaa949bffd62ef791e01c, type: 3}
   - {fileID: 5816517164659656821, guid: 7446a6f83f9443445bfdd36f0038c51c, type: 3}
@@ -170,6 +170,7 @@ MonoBehaviour:
   maxHealth: 12
   destroyedSprite: {fileID: 21300000, guid: fe683c42489c8e347bd83281e5e8d254, type: 3}
   lifeBar: {fileID: 2162657364556181771}
+  particles: {fileID: 1693222054203642884, guid: 7340ee1b39fe54a4483ef4339335109a, type: 3}
 --- !u!135 &9157176651621217296
 SphereCollider:
   m_ObjectHideFlags: 0

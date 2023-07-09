@@ -14,6 +14,7 @@ public class Cursor : MonoBehaviour
     [SerializeField] Transform selectionZone;
     [SerializeField] GameObject baseSprite, swordSprite, deleteMenu;
     [SerializeField] float acceleration = 1f;
+
     CursorState state = CursorState.Base;
     bool isSelecting = false;
     float currentSpeed = 0f;

@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     {
         numberOfAliveCaserns = FindObjectsOfType<Caserne>().Length;
         timer = 0;
+        deadScreen.SetActive(false);
+        winScreen.SetActive(false);
     }
 
     public void OnCasernDestroyed()
@@ -27,7 +29,7 @@ public class GameManager : MonoBehaviour
         numberOfAliveCaserns--;
         if (numberOfAliveCaserns <= 0)
         {
-            Debug.Log("Game Over");
+            GameObject.FindObjectOfType<Nexus>().Unshield();
         }
 
         //call all caserns to update their probabilities
@@ -58,11 +60,16 @@ public class GameManager : MonoBehaviour
     public void OnPlayerDeath()
     {
         gameOver = true;
+        deadScreen.SetActive(true);
+        timerText.gameObject.SetActive(false);
     }
 
     public void OnWin()
     {
         gameOver = true;
+        winScreen.SetActive(true);
+        winScreen.transform.GetChild(0).GetComponent<TMPro.TMP_Text>().text = "You won in " + timer.ToString("F2") + " seconds! Congratulations!";
+        timerText.gameObject.SetActive(false);
     }
 
     public bool IsGameOver()
