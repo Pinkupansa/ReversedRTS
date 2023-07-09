@@ -34,7 +34,6 @@ public class PlayerController : MonoBehaviour
             motor.MovePlayer(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), animationManager);
         }
 
-
     }
     void Update()
     {

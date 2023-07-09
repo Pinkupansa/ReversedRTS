@@ -123,7 +123,8 @@ GameObject:
   m_Component:
   - component: {fileID: 489498636002058871}
   - component: {fileID: 489498636002058870}
-  - component: {fileID: 489498636002058865}
+  - component: {fileID: 9157176651621217296}
+  - component: {fileID: 8291801081632799806}
   m_Layer: 0
   m_Name: Caserne (1)
   m_TagString: Untagged
@@ -160,24 +161,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb2dc31cb5d759c419f52c8ac4f8d009, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnRate: 0.2
-  soldierPrefab: {fileID: 8516275882346598796, guid: 04460dc8eeea72b40a3b4ba78c4a9c89, type: 3}
+  spawnRate: 0.3
+  soldierPrefabs:
+  - {fileID: 5867191854181520378, guid: 0de70ee2512aaa949bffd62ef791e01c, type: 3}
+  - {fileID: 5816517164659656821, guid: 7446a6f83f9443445bfdd36f0038c51c, type: 3}
+  - {fileID: 4307882149716933329, guid: 58d99d1aa65265d49988d79a717fa479, type: 3}
   spawnPoint: {fileID: 489498635887401504}
   maxHealth: 12
+  destroyedSprite: {fileID: 21300000, guid: fe683c42489c8e347bd83281e5e8d254, type: 3}
   lifeBar: {fileID: 2162657364556181771}
---- !u!65 &489498636002058865
-BoxCollider:
+--- !u!135 &9157176651621217296
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 489498636002058864}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 03a79b15e2977094abadf40a3af16d37, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.9379683, y: 1.7306261, z: 1.2559072}
-  m_Center: {x: 0.03357649, y: 0.69096684, z: 0.68027014}
+  m_Radius: 0.71723586
+  m_Center: {x: 0, y: 0.62132686, z: 0.40409076}
+--- !u!95 &8291801081632799806
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 489498636002058864}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1a5ac55b8b11e984b8a2f48cbd602a8e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &1367700443961847369
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -10,9 +10,9 @@ public class CamManager : MonoBehaviour
     {
         instance = this;
     }
-    public void CamShake(float duration)
+    public void CamShake(float duration, float magnitude = 5)
     {
-        StartCoroutine(Shake(duration, 5));
+        StartCoroutine(Shake(duration, magnitude));
     }
 
     IEnumerator Shake(float duration, float magnitude)

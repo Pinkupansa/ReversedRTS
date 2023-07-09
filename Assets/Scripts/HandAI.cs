@@ -82,8 +82,9 @@ public class HandAI : MonoBehaviour
             }
         }
 
-        startSelectionPosition = new Vector3(minX - 1, cursor.transform.position.y, maxZ + 1);
-        endSelectionPosition = new Vector3(maxX + 1, cursor.transform.position.y, minZ - 1);
+        startSelectionPosition = new Vector3(minX - 2, cursor.transform.position.y, maxZ + 2);
+        endSelectionPosition = new Vector3(maxX + 2, cursor.transform.position.y, minZ - 2);
+
 
     }
     void OnEnterIdle()
@@ -273,7 +274,7 @@ public class HandAI : MonoBehaviour
     State OnUpdateClickPlayer()
     {
         Vector3 playerPos = new Vector3(playerTransform.position.x, cursor.transform.position.y, playerTransform.position.z);
-        if (Vector3.Distance(cursor.transform.position, playerPos) < 1f)
+        if (Vector3.Distance(cursor.transform.position, playerPos) < 2f)
         {
             return deleteState;
         }

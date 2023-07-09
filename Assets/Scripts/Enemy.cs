@@ -22,7 +22,7 @@ public class Enemy : MonoBehaviour, IDamageable
     AnimationClip attackAnimation;
     EnemyBehaviour state = EnemyBehaviour.Idle;
 
-    [SerializeField] float attackRange, attackSpeed, damageImmoTime;
+    [SerializeField] float attackRange, attackPeriod, damageImmoTime, speed;
     [SerializeField] int attackDamage, maxHealth;
     [SerializeField] GameObject deathParticles;
 
@@ -81,7 +81,7 @@ public class Enemy : MonoBehaviour, IDamageable
                     break;
                 }
 
-                if (Vector3.Distance(transform.position, target.position) < attackRange)
+                if (Vector3.Distance(transform.position, target.position) < attackRange / 2f)
                 {
                     state = EnemyBehaviour.Attacking;
                     motor.MovePlayer(0, 0, animationManager);
@@ -121,13 +121,13 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         if (target != null)
         {
-            motor.MovePlayer((target.position - transform.position).normalized.x, (target.position - transform.position).normalized.z, animationManager);
+            motor.MovePlayer((target.position - transform.position).normalized.x * speed, (target.position - transform.position).normalized.z * speed, animationManager);
         }
 
     }
     void Attack()
     {
-        if (attackTimer > attackSpeed)
+        if (attackTimer > attackPeriod)
         {
             //Cake.instance.TakeDamage(attackDamage);
             animationManager.SetAnimatorTrigger("Attack");
