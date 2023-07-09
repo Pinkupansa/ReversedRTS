@@ -11,6 +11,10 @@ public class PlayerAttackManager : MonoBehaviour
     [SerializeField] AudioClip[] attackSounds, hitSounds;
     float attackTimer = 0f;
 
+    bool requestAttack = false;
+    bool isAttacking = false;
+
+    int attackCount = 0;
 
     void Start()
     {
@@ -25,9 +29,27 @@ public class PlayerAttackManager : MonoBehaviour
         newWeaponObject.transform.localRotation = Quaternion.identity;
     }
 
+    public void QueueAttack()
+    {
+        requestAttack = true;
+    }
+
+    void PlayAttack()
+    {
+        isAttacking = true;
+        GetComponent<PlayerController>().SetCanMove(false);
+        //move in the direction of the weapon holder projected on the ground
+        Vector3 weaponHolderProjected = new Vector3(weaponHolder.transform.position.x, transform.position.y, weaponHolder.transform.position.z);
+        Vector3 direction = (weaponHolderProjected - transform.position).normalized;
+        GetComponent<CharacterMotor>().MovePlayer(direction.x, direction.z, GetComponent<PlayerAnimationManager>());
+        GetComponent<PlayerAnimationManager>().SetAnimatorAttackCount(attackCount);
+        GetComponent<PlayerAnimationManager>().SetAnimatorTrigger("Attack");
+    }
+
     public void Attack()
     {
-        Debug.Log("Attacking");
+        isAttacking = false;
+
         SoundUtility.PlayRandomFromArrayOneShot(GetComponent<AudioSource>(), attackSounds, 0.2f);
         //Overlap sphere around the weapon
         Collider[] colliders = Physics.OverlapSphere(weaponHolder.transform.position, currentWeapon.BaseRange);
@@ -45,7 +67,14 @@ public class PlayerAttackManager : MonoBehaviour
             }
         }
 
+        Vector3 weaponHolderProjected = new Vector3(weaponHolder.transform.position.x, transform.position.y, weaponHolder.transform.position.z);
+        Vector3 direction = (weaponHolderProjected - transform.position).normalized;
+        GetComponent<Rigidbody>().AddForce(direction * attackCount * 40f, ForceMode.Impulse);
         attackTimer = 1 / currentWeapon.BaseSpeed;
+        attackCount = (attackCount + 1) % 3;
+
+        GetComponent<PlayerController>().SetCanMove(true);
+
     }
 
     void Update()
@@ -57,9 +86,21 @@ public class PlayerAttackManager : MonoBehaviour
         weaponHolder.transform.localPosition = new Vector3(direction.x, 0, direction.y) * weaponHolderDistance + Vector3.up * 0.5f;
 
         attackTimer -= Time.deltaTime;
-        if (Input.GetButtonDown("Fire1") && attackTimer <= 0f)
+        if (Input.GetButtonDown("Fire1") && (attackTimer <= 0f || attackCount == 1 || attackCount == 2) && !(isAttacking && attackCount == 2))
         {
-            Attack();
+            QueueAttack();
+        }
+        if (!isAttacking)
+        {
+            if (requestAttack)
+            {
+                PlayAttack();
+                requestAttack = false;
+            }
+            else
+            {
+                attackCount = 0;
+            }
         }
 
     }
