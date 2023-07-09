@@ -7,7 +7,10 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     int numberOfAliveCaserns;
-
+    [SerializeField] TMPro.TMP_Text timerText;
+    [SerializeField] GameObject deadScreen, winScreen;
+    float timer;
+    bool gameOver;
     public void Awake()
     {
         instance = this;
@@ -16,6 +19,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         numberOfAliveCaserns = FindObjectsOfType<Caserne>().Length;
+        timer = 0;
     }
 
     public void OnCasernDestroyed()
@@ -37,5 +41,43 @@ public class GameManager : MonoBehaviour
     public int GetNumberOfAliveCaserns()
     {
         return numberOfAliveCaserns;
+    }
+
+    void UpdateTimerText()
+    {
+        //keep 2 decimals
+        timerText.text = timer.ToString("F2");
+    }
+
+    void Update()
+    {
+        timer += Time.deltaTime;
+        UpdateTimerText();
+    }
+
+    public void OnPlayerDeath()
+    {
+        gameOver = true;
+    }
+
+    public void OnWin()
+    {
+        gameOver = true;
+    }
+
+    public bool IsGameOver()
+    {
+        return gameOver;
+    }
+
+    public void Restart()
+    {
+        //load the CURRENT scene
+        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void MainMenu()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
     }
 }

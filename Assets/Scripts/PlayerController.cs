@@ -29,6 +29,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (GameManager.instance.IsGameOver())
+        {
+            return;
+        }
         if (canMove)
         {
             motor.MovePlayer(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), animationManager);

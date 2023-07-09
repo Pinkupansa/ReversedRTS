@@ -45,8 +45,11 @@ public class HandAI : MonoBehaviour
 
     void Update()
     {
-        handAIStateMachine.Update();
-        stateText.text = handAIStateMachine.currentState.name;
+        if (!GameManager.instance.IsGameOver())
+        {
+            handAIStateMachine.Update();
+            stateText.text = handAIStateMachine.currentState.name;
+        }
     }
 
     void RecalculateSelectionData()
@@ -274,7 +277,7 @@ public class HandAI : MonoBehaviour
     State OnUpdateClickPlayer()
     {
         Vector3 playerPos = new Vector3(playerTransform.position.x, cursor.transform.position.y, playerTransform.position.z);
-        if (Vector3.Distance(cursor.transform.position, playerPos) < 2f)
+        if (Vector3.Distance(cursor.transform.position, playerPos) < 4f)
         {
             return deleteState;
         }

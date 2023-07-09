@@ -148,6 +148,10 @@ public class Enemy : MonoBehaviour, IDamageable
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (GameManager.instance.IsGameOver())
+        {
+            return;
+        }
         //if (GameManager.instance.IsGameOver)
         //{
         // return;

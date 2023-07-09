@@ -79,6 +79,10 @@ public class PlayerAttackManager : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.instance.IsGameOver())
+        {
+            return;
+        }
         Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
         Vector2 mousePos = Input.mousePosition;
         Vector2 direction = (mousePos - screenPos).normalized;
