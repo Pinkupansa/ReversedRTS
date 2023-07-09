@@ -37,7 +37,7 @@ public class PlayerAttackManager : MonoBehaviour
         foreach (Collider collider in colliders)
         {
             IDamageable damageable = collider.GetComponent<IDamageable>();
-            if (damageable != null)
+            if (damageable != null && collider.gameObject != gameObject)
             {
                 SoundUtility.PlayRandomFromArrayOneShot(GetComponent<AudioSource>(), hitSounds, 0.2f);
                 damageable.TakeDamage(currentWeapon.BaseDamage, false);

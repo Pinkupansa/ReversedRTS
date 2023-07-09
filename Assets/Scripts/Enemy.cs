@@ -25,11 +25,16 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] float attackRange, attackSpeed, damageImmoTime;
     [SerializeField] int attackDamage, maxHealth;
     [SerializeField] GameObject deathParticles;
+
+    [SerializeField] AudioClip[] attackSounds;
+    [SerializeField] float knockbackForce;
     public GameObject selectionCircle;
     int currentHealth;
     float attackTimer;
 
     float immobilisationTimer = 0;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -125,8 +130,9 @@ public class Enemy : MonoBehaviour, IDamageable
         if (attackTimer > attackSpeed)
         {
             //Cake.instance.TakeDamage(attackDamage);
-            animationManager.SetAnimatorTrigger("Eat");
-            //SoundUtility.PlayRandomFromArrayLoop(GetComponent<AudioSource>(), attackSounds, 0.8f, false);
+            animationManager.SetAnimatorTrigger("Attack");
+            SoundUtility.PlayRandomFromArrayOneShot(GetComponent<AudioSource>(), attackSounds, 0.1f);
+            StartCoroutine(WaitBeforeAttack());
 
             attackTimer = 0;
         }
@@ -177,6 +183,27 @@ public class Enemy : MonoBehaviour, IDamageable
     void Idle()
     {
         motor.MovePlayer(0, 0, animationManager);
+    }
+
+    IEnumerator WaitBeforeAttack()
+    {
+        yield return new WaitForSeconds(0.4f);
+        if (target != null)
+        {
+            if (Vector3.Distance(transform.position, target.position) < attackRange)
+            {
+                if (target.GetComponent<IDamageable>() != null)
+                {
+                    target.GetComponent<IDamageable>().TakeDamage(attackDamage, false);
+                    target.GetComponent<Rigidbody>().AddForce((target.position - transform.position).normalized * knockbackForce, ForceMode.Impulse);
+
+                }
+            }
+            else
+            {
+                state = EnemyBehaviour.Chasing;
+            }
+        }
     }
 }
 

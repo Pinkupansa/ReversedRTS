@@ -8,9 +8,12 @@ public class HandAI : MonoBehaviour
 {
     [SerializeField] TMP_Text stateText;
     [SerializeField] Cursor cursor;
+
+    [SerializeField] float attackModeProbability;
+    [SerializeField] Transform deleteTarget;
     StateMachine handAIStateMachine;
 
-    State idleState, selectUnitsState, moveUnitsState, moveToSelectUnitsState;
+    State idleState, selectUnitsState, moveUnitsState, moveToSelectUnitsState, moveToClickPlayerState, clickPlayerState, angryState, deleteState;
 
     List<Enemy> unitsToBeSelected;
     List<Enemy> unitsSelected;
@@ -20,6 +23,9 @@ public class HandAI : MonoBehaviour
     Transform playerTransform;
 
     float targetTolerance = 0.1f;
+
+    float timeIdleMin = 1f;
+    float idleTimer = 0f;
     void Start()
     {
 
@@ -27,10 +33,14 @@ public class HandAI : MonoBehaviour
         selectUnitsState = new State("Select Units", OnEnterSelectUnits, OnExitSelectUnits, OnUpdateSelectUnits);
         moveUnitsState = new State("Move Units", OnEnterMoveUnits, OnExitMoveUnits, OnUpdateMoveUnits);
         moveToSelectUnitsState = new State("Move To Select Units", OnEnterMoveToSelectUnits, OnExitMoveToSelectUnits, OnUpdateMoveToSelectUnits);
-
+        moveToClickPlayerState = new State("Move To Click Player", OnEnterMoveToClickPlayer, OnExitMoveToClickPlayer, OnUpdateMoveToClickPlayer);
         handAIStateMachine = new StateMachine(idleState);
-
+        clickPlayerState = new State("Click Player", OnEnterClickPlayer, OnExitClickPlayer, OnUpdateClickPlayer);
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        angryState = new State("Angry", OnEnterAngry, OnExitAngry, OnUpdateAngry);
+        deleteState = new State("Delete", OnEnterDelete, OnExitDelete, OnUpdateDelete);
+
+
     }
 
     void Update()
@@ -78,33 +88,51 @@ public class HandAI : MonoBehaviour
     }
     void OnEnterIdle()
     {
-        Debug.Log("Entering Idle");
+        // Debug.Log("Entering Idle");
     }
 
     void OnExitIdle()
     {
-        Debug.Log("Exiting Idle");
+        //Debug.Log("Exiting Idle");
     }
 
     State OnUpdateIdle()
     {
+        idleTimer += Time.deltaTime;
         RecalculateSelectionData();
-        if (unitsToBeSelected.Count > 0)
+        if (idleTimer > timeIdleMin)
         {
-            return moveToSelectUnitsState;
+            idleTimer = 0f;
+            if (unitsToBeSelected.Count > 0)
+            {
+                float random = Random.Range(0f, 1f);
+                if (random < attackModeProbability && Vector3.Distance(playerTransform.position, cursor.transform.position) > 2f)
+                {
+                    return moveToClickPlayerState;
+                }
+                else
+                {
+                    return moveToSelectUnitsState;
+                }
+            }
+            else
+            {
+                return moveToClickPlayerState;
+            }
         }
         return idleState;
+
     }
 
     void OnEnterMoveToSelectUnits()
     {
-        Debug.Log("Entering Move To Select Units");
+        //Debug.Log("Entering Move To Select Units");
         RecalculateSelectionData();
     }
 
     void OnExitMoveToSelectUnits()
     {
-        Debug.Log("Exiting Move To Select Units");
+        //Debug.Log("Exiting Move To Select Units");
     }
 
     State OnUpdateMoveToSelectUnits()
@@ -120,14 +148,14 @@ public class HandAI : MonoBehaviour
 
     void OnEnterSelectUnits()
     {
-        Debug.Log("Entering Select Units");
+        //Debug.Log("Entering Select Units");
         cursor.Click();
         cursor.StartSelecting();
     }
 
     void OnExitSelectUnits()
     {
-        Debug.Log("Exiting Select Units");
+        //.Log("Exiting Select Units");
         unitsToBeSelected = null;
         cursor.Release();
         cursor.StopSelecting();
@@ -141,7 +169,7 @@ public class HandAI : MonoBehaviour
 
         if (Vector3.Distance(cursor.transform.position, endSelectionPosition) < targetTolerance)
         {
-            Debug.Log("Selected Units");
+            //Debug.Log("Selected Units");
             unitsSelected = new List<Enemy>();
             foreach (Enemy enemy in unitsToBeSelected)
             {
@@ -155,13 +183,13 @@ public class HandAI : MonoBehaviour
 
     void OnEnterMoveUnits()
     {
-        Debug.Log("Entering Move Units");
+        //Debug.Log("Entering Move Units");
     }
 
     void OnExitMoveUnits()
     {
-        Debug.Log("Exiting Move Units");
-        cursor.Release();
+        //Debug.Log("Exiting Move Units");
+        cursor.Click();
     }
 
     State OnUpdateMoveUnits()
@@ -171,7 +199,7 @@ public class HandAI : MonoBehaviour
 
         if (Vector3.Distance(cursor.transform.position, target) < targetTolerance)
         {
-            cursor.Click();
+
             foreach (Enemy enemy in unitsSelected)
             {
                 enemy.SetTarget(playerTransform);
@@ -185,6 +213,95 @@ public class HandAI : MonoBehaviour
     void SetStateText(string text)
     {
         stateText.text = text;
+    }
+
+    void OnEnterMoveToClickPlayer()
+    {
+        //Debug.Log("Entering Move To Click Player");
+    }
+
+    void OnExitMoveToClickPlayer()
+    {
+        //Debug.Log("Exiting Move To Click Player");
+
+
+
+    }
+
+    State OnUpdateMoveToClickPlayer()
+    {
+        Vector3 target = new Vector3(playerTransform.position.x, cursor.transform.position.y, playerTransform.position.z);
+        cursor.MoveTowards(target);
+
+        if (Vector3.Distance(cursor.transform.position, target) < targetTolerance)
+        {
+            return angryState;
+        }
+        return moveToClickPlayerState;
+    }
+
+    void OnEnterAngry()
+    {
+        cursor.Angry();
+    }
+
+    void OnExitAngry()
+    {
+
+    }
+
+    State OnUpdateAngry()
+    {
+        if (cursor.IsAnimOn("angry"))
+        {
+            return angryState;
+        }
+        return clickPlayerState;
+    }
+
+    void OnEnterClickPlayer()
+    {
+        // Debug.Log("Entering Click Player");
+        cursor.Click();
+    }
+
+    void OnExitClickPlayer()
+    {
+        // Debug.Log("Exiting Click Player");
+    }
+
+    State OnUpdateClickPlayer()
+    {
+        Vector3 playerPos = new Vector3(playerTransform.position.x, cursor.transform.position.y, playerTransform.position.z);
+        if (Vector3.Distance(cursor.transform.position, playerPos) < 1f)
+        {
+            return deleteState;
+        }
+        return idleState;
+    }
+
+    void OnEnterDelete()
+    {
+        cursor.ShowDeleteMenu();
+    }
+
+    void OnExitDelete()
+    {
+        cursor.Click();
+        cursor.HideDeleteMenu();
+        Player.instance.TakeDamage(1, true);
+    }
+
+    State OnUpdateDelete()
+    {
+        Vector3 target = new Vector3(deleteTarget.position.x, cursor.transform.position.y, deleteTarget.position.z);
+        cursor.MoveTowards(target);
+        if (Vector3.Distance(cursor.transform.position, target) > targetTolerance)
+        {
+            return deleteState;
+        }
+        return idleState;
+
     }
 
 }
