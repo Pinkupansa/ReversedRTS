@@ -161,7 +161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnRate: 0.2
-  soldierPrefab: {fileID: 6360674784292072376, guid: 04460dc8eeea72b40a3b4ba78c4a9c89, type: 3}
+  soldierPrefab: {fileID: 8516275882346598796, guid: 04460dc8eeea72b40a3b4ba78c4a9c89, type: 3}
   spawnPoint: {fileID: 489498635887401504}
   maxHealth: 12
   lifeBar: {fileID: 2162657364556181771}

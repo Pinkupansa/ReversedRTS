@@ -25,6 +25,7 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] float attackRange, attackSpeed, damageImmoTime;
     [SerializeField] int attackDamage, maxHealth;
     [SerializeField] GameObject deathParticles;
+    public GameObject selectionCircle;
     int currentHealth;
     float attackTimer;
 

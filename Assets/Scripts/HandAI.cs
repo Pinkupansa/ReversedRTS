@@ -145,6 +145,7 @@ public class HandAI : MonoBehaviour
             unitsSelected = new List<Enemy>();
             foreach (Enemy enemy in unitsToBeSelected)
             {
+                enemy.selectionCircle.GetComponent<SelectionCircle>().Activate();
                 unitsSelected.Add(enemy);
             }
             return moveUnitsState;

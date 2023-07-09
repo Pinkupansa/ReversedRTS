@@ -6,7 +6,7 @@ public class Cursor : MonoBehaviour
 {
 
     [SerializeField] float baseSpeed = 500f;
-    [SerializeField] RectTransform selectionZone;
+    [SerializeField] Transform selectionZone;
     bool isSelecting = false;
     void Start()
     {
@@ -33,22 +33,23 @@ public class Cursor : MonoBehaviour
 
     public void StartSelecting()
     {
-        /*isSelecting = true;
-        selectionZone.gameObject.SetActive(true);
-        selectionZone.position = transform.position;*/
+        isSelecting = true;
+
+        selectionZone.position = transform.position;
     }
 
     public void StopSelecting()
     {
-        /*isSelecting = false;
-        selectionZone.gameObject.SetActive(false);*/
+        isSelecting = false;
+        selectionZone.gameObject.SetActive(false);
     }
 
     void Update()
     {
-        /*if (isSelecting)
-       {
-           selectionZone.sizeDelta = new Vector2(transform.position.x - selectionZone.position.x, selectionZone.position.y - transform.position.y);
-       }*/
+        if (isSelecting)
+        {
+            selectionZone.gameObject.SetActive(true);
+            selectionZone.transform.localScale = new Vector3(transform.position.x - selectionZone.position.x, 1, selectionZone.position.z - transform.position.z);
+        }
     }
 }
