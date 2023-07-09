@@ -86,4 +86,8 @@ public class PlayerAnimationManager : MonoBehaviour
     {
         animator.SetBool(boolName, value);
     }
+    public void SetAnimatorAttackCount(int value)
+    {
+        animator.SetInteger("AttackNumber", value);
+    }
 }

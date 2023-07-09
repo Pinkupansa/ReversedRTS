@@ -18,6 +18,14 @@ public class PlayerController : MonoBehaviour
         animationManager = GetComponent<PlayerAnimationManager>();
     }
 
+    public void SetCanMove(bool canMove)
+    {
+        motor.MovePlayer(0, 0, animationManager);
+        animationManager.SetAnimatorBool("isMoving", false);
+        this.canMove = canMove;
+
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
